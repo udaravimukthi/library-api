@@ -2,48 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMemberRequest;
+use App\Http\Resources\MemberResource;
 use App\Models\Member;
-use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // POST /api/members
+    public function store(StoreMemberRequest $request): MemberResource
     {
-        //
+        return new MemberResource(Member::create($request->validated()));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // GET /api/members/{member}
+    public function show(Member $member): MemberResource
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Member $member)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Member $member)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Member $member)
-    {
-        //
+        return new MemberResource($member);
     }
 }
