@@ -2,48 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreLoanRequest;
+use App\Http\Resources\LoanResource;
 use App\Models\Loan;
-use Illuminate\Http\Request;
+use App\Services\LoanService;
 
 class LoanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Laravel's service container creates LoanService and passes it in
+    public function __construct(private readonly LoanService $loans) {}
+
+    // POST /api/loans
+    public function store(StoreLoanRequest $request): LoanResource
     {
-        //
+        $loan = $this->loans->borrow(
+            memberId: $request->integer('member_id'),
+            bookId: $request->integer('book_id'),
+        );
+
+        return new LoanResource($loan->load('book'));   // 201 (new model)
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // POST /api/loans/{loan}/return
+    public function returnBook(Loan $loan): LoanResource
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Loan $loan)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Loan $loan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Loan $loan)
-    {
-        //
+        return new LoanResource($this->loans->return($loan)->load('book'));   // 200
     }
 }

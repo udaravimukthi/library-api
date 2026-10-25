@@ -7,13 +7,22 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class LoanResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'book' => new BookResource($this->whenLoaded('book')),  // only if loaded with with()/load()
+            'member_id' => $this->member_id,
+            'borrowed_at' => $this->borrowed_at->toIso8601String(),
+            'due_at' => $this->due_at->toIso8601String(),
+            'returned_at' => $this->returned_at?->toIso8601String(),
+            'status' => match (true) {
+                $this->isReturned() => 'returned',
+                $this->isOverdue() => 'overdue',
+                default => 'active',
+            },
+            'days_overdue' => $this->daysOverdue(),
+            'fine' => $this->fine(),
+        ];
     }
 }
