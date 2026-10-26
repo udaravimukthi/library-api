@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\LoanFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Support\Carbon;
 
 class Loan extends Model
 {
-    /** @use HasFactory<\Database\Factories\LoanFactory> */
+    /** @use HasFactory<LoanFactory> */
     use HasFactory;
 
     public const FINE_PER_DAY = 50; // LKR per started day late
